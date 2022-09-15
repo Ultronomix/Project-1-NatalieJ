@@ -17,9 +17,9 @@ import java.util.UUID;
 // DAO = Data Access Object
 public class UserDAO {
 
-    private final String baseSelect = "SELECT au.id, au.given_name, au.surname, au.email, au.username, au.role_id, ur.role " +
-            "FROM app_users au " +
-            "JOIN user_roles ur " +
+    private final String baseSelect = "SELECT au.GIVEN_NAME, au.SURNAME, au.EMAIL, au.USERNAME, au.PASSWORD, au.role_id, ur.role " +
+            "FROM ERS_USERS au " +
+            "JOIN ERS_ROLES ur " +
             "ON au.role_id = ur.id ";
 
     public List<User> getAllUsers() {
@@ -130,8 +130,8 @@ public class UserDAO {
 
     public String save(User user) {
 
-        String sql = "INSERT INTO app_users (given_name, surname, email, username, password, role_id) " +
-                "VALUES (?, ?, ?, ?, ?, '5a2e0415-ee08-440f-ab8a-778b37ff6874')";
+        String sql = "INSERT INTO ERS_USERS (given_name, surname, email, username, password, role_id) " +
+                "VALUES (?, ?, ?, ?, ?,  '10cf1304-5f3b-47cb-a65b-73863fd2ad16')";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 

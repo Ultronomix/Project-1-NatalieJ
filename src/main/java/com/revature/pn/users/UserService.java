@@ -41,8 +41,6 @@ public class UserService {
             throw new InvalidRequestException("An invalid UUID string was provided.");
         }
 
-
-
     }
 
     public ResourceCreationResponse register(NewUserRequest newUser) {

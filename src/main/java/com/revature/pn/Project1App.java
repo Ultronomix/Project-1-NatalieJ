@@ -1,5 +1,6 @@
 package com.revature.pn;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.auth.AuthService;
 import com.revature.pn.auth.AuthServlet;
 import com.revature.pn.users.UserDAO;
@@ -7,10 +8,17 @@ import com.revature.pn.users.UserService;
 import com.revature.pn.users.UserServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Project1App {
 
+    private static Logger logger = LogManager.getLogger(Project1App.class);
+
     public static void main(String[] args) throws LifecycleException {
+
+        logger.info("Starting pn application");
+
         String docBase = System.getProperty("java.io.tmpdir");
         Tomcat webServer = new Tomcat();
 
@@ -23,17 +31,19 @@ public class Project1App {
         UserDAO userDAO = new UserDAO();
         AuthService authService = new AuthService(userDAO);
         UserService userService = new UserService(userDAO);
-        UserServlet userServlet = new UserServlet(userService);
-        AuthServlet authServlet = new AuthServlet(authService);
+        ObjectMapper jsonMapper = new ObjectMapper();
+        UserServlet userServlet = new UserServlet(userService, jsonMapper);
+        AuthServlet authServlet = new AuthServlet(authService, jsonMapper);
 
         // Web server context and servlet configurations
-        final String rootContext = "/pn ";
+        final String rootContext = "/pn";
         webServer.addContext(rootContext, docBase);
-        webServer.addServlet(rootContext, "UserServlet ", userServlet).addMapping("/users");
-        webServer.addServlet(rootContext, "AuthServlet ", authServlet).addMapping("/auth");
+        webServer.addServlet(rootContext, "UserServlet", userServlet).addMapping("/users");
+        webServer.addServlet(rootContext, "AuthServlet", authServlet).addMapping("/auth");
 
         // Starting and awaiting web requests
         webServer.start();
+        logger.info("pn web application successfully started");
         webServer.getServer().await();
 
     }

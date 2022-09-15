@@ -1,9 +1,9 @@
 package com.revature.pn.auth;
 
-import com.revature.pn.users.UserDAO;
-import com.revature.pn.users.UserResponse;
 import com.revature.pn.common.exceptions.AuthenticationException;
 import com.revature.pn.common.exceptions.InvalidRequestException;
+import com.revature.pn.users.UserDAO;
+import com.revature.pn.users.UserResponse;
 
 public class AuthService {
 
