@@ -17,10 +17,10 @@ import java.util.UUID;
 // DAO = Data Access Object
 public class UserDAO {
 
-    private final String baseSelect = "SELECT au.GIVEN_NAME, au.SURNAME, au.EMAIL, au.USERNAME, au.PASSWORD, au.role_id, ur.role " +
+    private final String baseSelect = "SELECT au.user_id, au.GIVEN_NAME, au.SURNAME, au.EMAIL, au.USERNAME, au.PASSWORD, au.role_id, ur.role " +
             "FROM ERS_USERS au " +
-            "JOIN ERS_ROLES ur " +
-            "ON au.role_id = ur.id ";
+            "JOIN ERS_USER_ROLES ur " +
+            "ON au.role_id = ur.role_id ";
 
     public List<User> getAllUsers() {
 
@@ -110,6 +110,8 @@ public class UserDAO {
 
     public Optional<User> findUserByUsernameAndPassword(String username, String password) {
 
+        System.out.printf("Searching for user with credentials: %s %s\n", username, password);
+
         String sql = baseSelect + "WHERE au.username = ? AND au.password = ?";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -122,6 +124,7 @@ public class UserDAO {
             return mapResultSet(rs).stream().findFirst();
 
         } catch (SQLException e) {
+            e.printStackTrace();
             // TODO log this exception
             throw new DataSourceException(e);
         }
@@ -162,12 +165,12 @@ public class UserDAO {
         List<User> users = new ArrayList<>();
         while (rs.next()) {
             User user = new User();
-            user.setId(rs.getString("id"));
+            user.setId(rs.getString("user_id"));
             user.setGivenName(rs.getString("given_name"));
             user.setSurname(rs.getString("surname"));
             user.setEmail(rs.getString("email"));
             user.setUsername(rs.getString("username"));
-            user.setPassword("***********"); // done for security purposes
+            user.setPassword(rs.getString("password"));
             user.setRole(new Role(rs.getString("role_id"), rs.getString("role")));
             users.add(user);
         }

@@ -33,7 +33,7 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        logger.info("A POST request was received by /taskmaster/auth at {}", LocalDateTime.now());
+        logger.info("A POST request was received by /pn/auth at {}", LocalDateTime.now());
 
         resp.setContentType("application/json");
 
