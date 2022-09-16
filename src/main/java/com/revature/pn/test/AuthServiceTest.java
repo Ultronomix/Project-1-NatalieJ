@@ -1,10 +1,10 @@
 package com.revature.pn.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.auth.AuthService;
 import com.revature.pn.auth.Credentials;
 import com.revature.pn.common.exceptions.AuthenticationException;
 import com.revature.pn.common.exceptions.InvalidRequestException;
+import com.revature.pn.common.role.Role;
 import com.revature.pn.users.User;
 import com.revature.pn.users.UserDAO;
 import com.revature.pn.users.UserResponse;
@@ -21,10 +21,8 @@ import static org.mockito.Mockito.*;
 
 public class AuthServiceTest {
 
-    AuthService sut;
+    AuthService sut; // SYSTEM UNDER TEST (the thing being tested)
     UserDAO mockUserDAO;
-    private ObjectMapper jsonMapper;
-    private UserResponse userResponse;
 
     @BeforeEach
     public void setup() {
@@ -34,7 +32,7 @@ public class AuthServiceTest {
 
     @AfterEach
     public void cleanUp() {
-        Mockito.reset(mockUserDAO);
+        Mockito.reset(mockUserDAO); // helps to ensure that and when/then on this mock are reset/invalidated
     }
 
     @Test
@@ -42,7 +40,7 @@ public class AuthServiceTest {
 
         // Arrange
         Credentials credentialsStub = new Credentials("valid", "credentials");
-        User userStub = new User(userResponse, jsonMapper);
+        User userStub = new User("some-uuid", "Val", "Id", "valid123@revature.net", "valid", "credentials", new Role("some-role-id", "QA"));
         when(mockUserDAO.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(userStub));
         UserResponse expectedResult = new UserResponse(userStub);
 
@@ -51,13 +49,13 @@ public class AuthServiceTest {
 
         // Assert
         assertNotNull(actualResult);
-        assertEquals(expectedResult, actualResult);
+        assertEquals(expectedResult, actualResult); // PLEASE NOTE: the objects you are comparing need to have a .equals method
         verify(mockUserDAO, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
 
     }
 
     @Test
-    public void test_authenticate_throwsInvalidRequestException_givenInvalidCredentials() {
+    public void test_authenticate_throwsInvalidRequestException_givenTooShortOfPassword() {
 
         // Arrange
         Credentials credentialsStub = new Credentials("invalid", "creds");
@@ -73,8 +71,39 @@ public class AuthServiceTest {
     }
 
     @Test
+    public void test_authenticate_throwsInvalidRequestException_givenTooShortOfUsername() {
+
+        // Arrange
+        Credentials credentialsStub = new Credentials("x", "p4$$2W0RD");
+
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            sut.authenticate(credentialsStub);
+        });
+
+        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+
+
+    }
+
+    @Test
+    public void test_authenticate_throwsInvalidRequestException_givenNullCredentials() {
+
+        // Arrange
+        Credentials credentialsStub = null;
+
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            sut.authenticate(credentialsStub);
+        });
+
+        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+
+
+    }
+
+    @Test
     public void test_authenticate_throwsAuthenticationException_givenValidUnknownCredentials() {
-        // TODO implement this test
 
         // Arrange
         Credentials credentialsStub = new Credentials("unknown", "credentials");
@@ -89,4 +118,6 @@ public class AuthServiceTest {
         verify(mockUserDAO, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
 
     }
+
+
 }
