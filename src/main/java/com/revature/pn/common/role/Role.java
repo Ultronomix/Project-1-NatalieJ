@@ -1,4 +1,4 @@
-package com.revature.pn.users;
+package com.revature.pn.common.role;
 
 import java.util.Objects;
 

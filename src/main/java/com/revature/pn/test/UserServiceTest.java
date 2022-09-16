@@ -1,6 +1,7 @@
 package com.revature.pn.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pn.common.role.Role;
 import com.revature.pn.users.*;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;

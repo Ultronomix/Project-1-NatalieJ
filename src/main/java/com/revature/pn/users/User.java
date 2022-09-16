@@ -1,6 +1,7 @@
 package com.revature.pn.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pn.common.role.Role;
 
 import java.util.Objects;
 

@@ -2,6 +2,7 @@ package com.revature.pn.users;
 
 import com.revature.pn.common.datasource.ConnectionFactory;
 import com.revature.pn.common.exceptions.DataSourceException;
+import com.revature.pn.common.role.Role;
 
 import java.io.BufferedWriter;
 import java.io.File;
