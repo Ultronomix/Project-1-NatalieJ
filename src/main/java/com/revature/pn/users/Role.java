@@ -12,6 +12,10 @@ public class Role {
         this.name = role;
     }
 
+    public Role(String userDAO) {
+
+    }
+
     public String getId() {
         return id;
     }

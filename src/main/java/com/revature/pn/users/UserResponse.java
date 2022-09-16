@@ -1,10 +1,12 @@
 package com.revature.pn.users;
 
+import com.revature.pn.auth.AuthService;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 // Example of a response DTO
-public class UserResponse implements Serializable {
+public class UserResponse extends AuthService implements Serializable {
 
     private String id;
     private String givenName;
@@ -15,12 +17,17 @@ public class UserResponse implements Serializable {
     private Object userId;
 
     public UserResponse(User subject) {
+        super();
         this.id = subject.getId();
         this.givenName = subject.getGivenName();
         this.surname = subject.getSurname();
         this.email = subject.getEmail();
         this.username = subject.getUsername();
         this.role = subject.getRole().getName();
+    }
+
+    public UserResponse(String userDAO) {
+
     }
 
     public String getId() {

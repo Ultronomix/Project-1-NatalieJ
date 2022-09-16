@@ -1,5 +1,6 @@
 package com.revature.pn.users;
 
+import com.revature.pn.auth.Credentials;
 import com.revature.pn.common.ResourceCreationResponse;
 import com.revature.pn.common.exceptions.InvalidRequestException;
 import com.revature.pn.common.exceptions.ResourceNotFoundException;
@@ -79,5 +80,9 @@ public class UserService {
         String newUserId = userDAO.save(userToPersist);
         return new ResourceCreationResponse(newUserId);
 
+    }
+
+    public void authenticate(Credentials credentialsStub) {
+        return;
     }
 }

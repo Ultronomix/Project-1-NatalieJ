@@ -24,15 +24,16 @@ public class StatusService {
         System.out.println(updateStatusAndResolver);
 
         Reimbursements statusAndResolver = reimbDAO.findReimbByStatus_id
-                (updateStatusAndResolver.getReimbByReimbId()).orElseThrow(ResourceNotFoundException::new);
+                (updateStatusAndResolver.getReimbByReimb_Id()).orElseThrow(ResourceNotFoundException::new);
 
-        if (updateStatusAndResolver.getResolverId() != null) {
-            statusAndResolver.setResolverId(updateStatusAndResolver.getResolverId());
+        if (updateStatusAndResolver.getResolver_Id() != null) {
+            statusAndResolver.setResolverId(updateStatusAndResolver.getResolver_Id());
         }
 
-        if (updateStatusAndResolver.getReimbByStatus_id() != null) {
-            statusAndResolver.setReimbByStatus(updateStatusAndResolver.getReimbByStatus());
+        if (updateStatusAndResolver.getStatusId() != null) {
+            statusAndResolver.setStatusId(updateStatusAndResolver.getStatusId());
         }
+
 
         reimbDAO.UpdateReimbursementRequest(statusAndResolver);
     }

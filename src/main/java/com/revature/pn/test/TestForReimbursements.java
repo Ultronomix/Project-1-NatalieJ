@@ -43,11 +43,11 @@ public class TestForReimbursements {
         ReimbServlet reimbServlet = new ReimbServlet(reimbService);
 
 
-        final String rootContext = "/shinobi";
+        final String rootContext = "/test";
         webServer.addContext(rootContext, docBase);
         webServer.addServlet(rootContext, "UserServlet", userServlet).addMapping("/users");
         webServer.addServlet(rootContext, "AuthServlet", authServlet).addMapping("/auth");
-        webServer.addServlet(rootContext, "ReimbServlet", reimbServlet).addMapping("/reimb");
+        webServer.addServlet(rootContext, "ReimbServlet", reimbServlet).addMapping("/reimbursements");
 
 
         webServer.start();

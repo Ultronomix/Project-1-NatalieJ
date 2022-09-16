@@ -17,8 +17,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-import static com.revature.pn.common.SecurityUtils.isDirector;
-import static com.revature.pn.common.SecurityUtils.requesterOwned;
+import static com.revature.pn.common.util.SecurityUtils.isDirector;
+import static com.revature.pn.common.util.SecurityUtils.requesterOwned;
 
 public class UserServlet extends HttpServlet {
 
@@ -29,6 +29,11 @@ public class UserServlet extends HttpServlet {
     public UserServlet(UserService userService, ObjectMapper jsonMapper) {
         this.userService = userService;
         this.jsonMapper = jsonMapper;
+    }
+
+    public UserServlet(UserService userService) {
+        jsonMapper = new ObjectMapper();
+        this.userService = null;
     }
 
     @Override

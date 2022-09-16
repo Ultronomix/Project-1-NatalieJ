@@ -1,5 +1,6 @@
 package com.revature.pn.test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.auth.AuthService;
 import com.revature.pn.auth.Credentials;
 import com.revature.pn.common.exceptions.AuthenticationException;
@@ -22,6 +23,8 @@ public class AuthServiceTest {
 
     AuthService sut;
     UserDAO mockUserDAO;
+    private ObjectMapper jsonMapper;
+    private UserResponse userResponse;
 
     @BeforeEach
     public void setup() {
@@ -39,7 +42,7 @@ public class AuthServiceTest {
 
         // Arrange
         Credentials credentialsStub = new Credentials("valid", "credentials");
-        User userStub = new User();
+        User userStub = new User(userResponse, jsonMapper);
         when(mockUserDAO.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(userStub));
         UserResponse expectedResult = new UserResponse(userStub);
 

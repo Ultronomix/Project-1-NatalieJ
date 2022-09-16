@@ -1,4 +1,4 @@
-package com.revature.pn.common;
+package com.revature.pn.common.util;
 
 import com.revature.pn.users.UserResponse;
 

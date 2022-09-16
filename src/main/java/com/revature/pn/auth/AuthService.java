@@ -13,6 +13,11 @@ public class AuthService {
         this.userDAO = userDAO;
     }
 
+    public AuthService() {
+
+        userDAO = new UserDAO();
+    }
+
     public UserResponse authenticate(Credentials credentials) {
 
         if (credentials == null) {

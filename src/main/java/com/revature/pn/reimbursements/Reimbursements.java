@@ -130,4 +130,10 @@ public class Reimbursements {
     public Object getResolverId() {
         return resolverId;
     }
+
+    public void setReimbByStatus_id(boolean reimbByStatus_id) {
+    }
+
+    public void setStatusId(Object statusId) {
+    }
 }

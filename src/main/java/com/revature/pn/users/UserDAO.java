@@ -164,7 +164,7 @@ public class UserDAO {
     private List<User> mapResultSet(ResultSet rs) throws SQLException {
         List<User> users = new ArrayList<>();
         while (rs.next()) {
-            User user = new User();
+            User user = new User(userResponse, jsonMapper);
             user.setId(rs.getString("user_id"));
             user.setGivenName(rs.getString("given_name"));
             user.setSurname(rs.getString("surname"));

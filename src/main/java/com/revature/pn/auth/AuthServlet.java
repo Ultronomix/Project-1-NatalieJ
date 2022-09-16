@@ -30,6 +30,12 @@ public class AuthServlet extends HttpServlet {
         this.jsonMapper = jsonMapper;
     }
 
+    public AuthServlet(AuthService authService) {
+
+        this.authService = null;
+        jsonMapper = new ObjectMapper();
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

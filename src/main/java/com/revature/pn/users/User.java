@@ -1,5 +1,7 @@
 package com.revature.pn.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Objects;
 
 // POJO = Plain Ol' Java Objects
@@ -13,7 +15,7 @@ public class User {
     private String password;
     private Role role;
 
-    public User() {
+    public User(UserResponse userResponse, ObjectMapper jsonMapper) {
         super();
     }
 
