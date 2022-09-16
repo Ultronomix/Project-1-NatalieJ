@@ -12,6 +12,7 @@ public class UserResponse implements Serializable {
     private String email;
     private String username;
     private String role;
+    private Object userId;
 
     public UserResponse(User subject) {
         this.id = subject.getId();
@@ -95,4 +96,11 @@ public class UserResponse implements Serializable {
                 '}';
     }
 
+    public Object getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Object userId) {
+        this.userId = userId;
+    }
 }
