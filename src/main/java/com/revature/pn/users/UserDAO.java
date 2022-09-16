@@ -1,5 +1,6 @@
 package com.revature.pn.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.common.datasource.ConnectionFactory;
 import com.revature.pn.common.exceptions.DataSourceException;
 import com.revature.pn.common.role.Role;
@@ -22,6 +23,8 @@ public class UserDAO {
             "FROM ERS_USERS au " +
             "JOIN ERS_USER_ROLES ur " +
             "ON au.role_id = ur.role_id ";
+    private UserResponse userResponse;
+    private ObjectMapper jsonMapper;
 
     public List<User> getAllUsers() {
 

@@ -1,5 +1,6 @@
 package com.revature.pn.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.common.Request;
 
 import java.util.UUID;
@@ -11,6 +12,8 @@ public class NewUserRequest implements Request<User> {
     private String email;
     private String username;
     private String password;
+    private UserResponse userResponse;
+    private ObjectMapper jsonMapper;
 
     public String getGivenName() {
         return givenName;
