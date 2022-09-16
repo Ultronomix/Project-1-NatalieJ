@@ -8,6 +8,9 @@ public class UpdateReimbursementRequest implements Request<Reimbursements> {
     private double amount;
     private String description;
     private String type_id;
+    private Object resolverId;
+    private String reimbByReimbId;
+    private Object reimbByStatus_id;
 
     public String getStatus_id() {
         return status_id;
@@ -53,14 +56,43 @@ public class UpdateReimbursementRequest implements Request<Reimbursements> {
 
     @Override
     public Reimbursements extractEntity() {
-        Reimbursements extractedEntity = new Reimbursements();
-        extractedEntity.setStatus_id(this.status_id);
-        extractedEntity.setAmount(this.amount);
-        extractedEntity.setDescription(this.description);
-        extractedEntity.setType_id(this.type_id);
+           Reimbursements extractedEntity = new Reimbursements();
+           extractedEntity.setStatus_id(this.status_id);
+           extractedEntity.setAmount(this.amount);
+           extractedEntity.setDescription(this.description);
+           extractedEntity.setType_id(this.type_id);
 
         return extractedEntity;
     }
 
 
+    public boolean getReimbByStatus() {
+        return true;
+    }
+
+    public Object getResolverId() {
+        Object resolverId = null;
+        return resolverId;
+    }
+
+    public void setResolverId(Object resolverId) {
+        this.resolverId = resolverId;
+    }
+
+    public String getReimbByReimbId() {
+        String reimbByReimbId = null;
+        return reimbByReimbId;
+    }
+
+    public void setReimbByReimbId(String reimbByReimbId) {
+        this.reimbByReimbId = reimbByReimbId;
+    }
+
+    public Object getReimbByStatus_id() {
+        return reimbByStatus_id;
+    }
+
+    public void setReimbByStatus_id(Object reimbByStatus_id) {
+        this.reimbByStatus_id = reimbByStatus_id;
+    }
 }

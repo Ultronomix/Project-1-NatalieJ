@@ -16,6 +16,7 @@ public class Reimbursements {
     private LocalDateTime resolved_id;
     private String status_id;
     private String type_id;
+    private Object resolverId;
 
     public String getReimb_id() {
         return reimb_id;
@@ -117,5 +118,16 @@ public class Reimbursements {
                 ", status_id='" + status_id + '\'' +
                 ", type_id='" + type_id + '\'' +
                 '}';
+    }
+
+    public void setReimbByStatus(boolean reimbByStatus) {
+    }
+
+    public void setResolverId(Object resolverId) {
+        this.resolverId = resolverId;
+    }
+
+    public Object getResolverId() {
+        return resolverId;
     }
 }

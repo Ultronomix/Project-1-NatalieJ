@@ -27,9 +27,9 @@ public class ReimbursementsDAO {
     private final String baseSelect = "SELECT er.reimb_id, er.amount, er.submitted, er.resolved, " +
             "er.description, er.payment_id, er.author_id, er.resolved_id, " +
             "ers.status, ert.type_ " +
-            "FROM project1.ers_reimbursements er " +
-            "JOIN project1.ers_reimbursement_statuses ers ON er.status_id = ers.status_id " +
-            "JOIN project1.ers_reimbursement_types ert ON er.type_id = ert.type_id ";
+            "FROM projectstuff.ers_reimbursements er " +
+            "JOIN projectstuff.ers_reimbursement_statuses ers ON er.status_id = ers.status_id " +
+            "JOIN projectstuff.ers_reimbursement_types ert ON er.type_id = ert.type_id ";
 
     public List<Reimbursements> getAllReimbs() {
 
@@ -157,7 +157,7 @@ public class ReimbursementsDAO {
     public void updateRequestStatus(String status, String reimb_id, String resolver_id) {
 
 
-        String sql = "UPDATE project1.ers_reimbursements SET status_id = ?, resolved = ?, resolved_id = ? WHERE reimb_id = ? ";
+        String sql = "UPDATE projectstuff.ers_reimbursements SET status_id = ?, resolved = ?, resolved_id = ? WHERE reimb_id = ? ";
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -181,7 +181,7 @@ public class ReimbursementsDAO {
     public String updateUserAmount(String reimbId, double newAmount) {
 
 
-        String sql = "UPDATE project1.ers_reimbursements SET amount = ? WHERE reimb_id = ? ";
+        String sql = "UPDATE projectstuff.ers_reimbursements SET amount = ? WHERE reimb_id = ? ";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
@@ -201,7 +201,7 @@ public class ReimbursementsDAO {
     public String updateUserDescription(String reimbId, String description) {
 
 
-        String sql = "UPDATE project1.ers_reimbursements SET description = ? WHERE reimb_id = ? ";
+        String sql = "UPDATE projectstuff.ers_reimbursements SET description = ? WHERE reimb_id = ? ";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
@@ -222,7 +222,7 @@ public class ReimbursementsDAO {
     public String updateUserType(String reimbId, String type_id) {
 
 
-        String sql = "UPDATE project1.ers_reimbursements SET type_id = ? WHERE reimb_id = ?";
+        String sql = "UPDATE projectstuff.ers_reimbursements SET type_id = ? WHERE reimb_id = ?";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
@@ -255,41 +255,39 @@ public class ReimbursementsDAO {
             throw new ResourceNotFoundException();
         }
     }
-//    public String newReimbRequest(Reimbursements reimbursements) {
-//
-//        String baseSelect = " INSERT INTO project1.ers_reimbursements (reimb_id, amount, submitted, resolved, description, payment_id, author_id, resolved_id, status_id, type_id) " +
-//                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-//
-//        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-//
-//            PreparedStatement pstmt = conn.prepareStatement(baseSelect, new String[]{"reimb_id"});
-//            pstmt.setString(1, reimbursements.getReimb_id());
-//            pstmt.setString(2, String.valueOf(reimbursements.getAmount()));
-//            pstmt.setString(3, reimbursements.getSubmitted());
-//            pstmt.setString(4, reimbursements.getResolved());
-//            pstmt.setString(5, reimbursements.getDescription());
-//            pstmt.setString(6, reimbursements.getPayment_id());
-//            pstmt.setString(7, reimbursements.getAuthor_id());
-//            pstmt.setString(8, reimbursements.getResolved_id());
-//            pstmt.setString(9, reimbursements.getStatus_id());
-//            pstmt.setString(10, reimbursements.getType_id());
-//
-//
-//            pstmt.executeUpdate();
-//
-//            ResultSet rs = pstmt.getGeneratedKeys();
-//            rs.next();
-//            reimbursements.setReimb_id(rs.getString("reimb_id"));
-//
-//        } catch (SQLException e) {
-//            log("ERROR", e.getMessage());
-//        }
-//
-//        log("INFO", "Successfully persisted new user with id: " + reimbursements.getReimb_id());
-//
-//        return reimbursements.getReimb_id();
-//    }
+  /*  public String newReimbursementRequest(Reimbursements reimbursements) {
+        String baseSelect = " INSERT INTO projectstuff.ers_reimbursements (reimb_id, amount, submitted, resolved, description,
+                 author_id, resolved_id, status_id, type_id) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect, new String[]{"reimb_id"});
+            pstmt.setString(1, reimbursements.getReimb_id());
+            pstmt.setString(2, String.valueOf(reimbursements.getAmount()));
+            pstmt.setString(3, reimbursements.getSubmitted());
+            pstmt.setString(4, reimbursements.getResolved());
+            pstmt.setString(5, reimbursements.getDescription());
+            pstmt.setString(7, reimbursements.getAuthor_id());
+            pstmt.setString(8, reimbursements.getResolved_id());
+            pstmt.setString(9, reimbursements.getStatus_id());
+            pstmt.setString(10, reimbursements.getType_id());
+
+
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+            rs.next();
+            reimbursements.setReimb_id(rs.getString("reimb_id"));
+
+            } catch (SQLException e) {
+            log("ERROR", e.getMessage());
+        }
+        log("INFO", "Successfully persisted new user with id: " + reimbursements.getReimb_id());
+
+        return reimbursements.getReimb_id();
+    }
+*/
     private List<Reimbursements> mapResultSet(ResultSet rs) throws SQLException {
 
         List<Reimbursements> reimbursements = new ArrayList<>();
@@ -324,5 +322,8 @@ public class ReimbursementsDAO {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void UpdateReimbursementRequest(Reimbursements statusAndResolver) {
     }
 }
