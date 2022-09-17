@@ -3,6 +3,9 @@ package com.revature.pn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.auth.AuthService;
 import com.revature.pn.auth.AuthServlet;
+import com.revature.pn.reimbursements.ReimbService;
+import com.revature.pn.reimbursements.ReimbServlet;
+import com.revature.pn.reimbursements.ReimbursementsDAO;
 import com.revature.pn.users.UserDAO;
 import com.revature.pn.users.UserService;
 import com.revature.pn.users.UserServlet;
@@ -30,11 +33,14 @@ public class Project1App {
 
         // App component instantiation
         UserDAO userDAO = new UserDAO();
+        ReimbursementsDAO reimbursementsDAO = new ReimbursementsDAO();
         AuthService authService = new AuthService(userDAO);
         UserService userService = new UserService(userDAO);
+        ReimbService reimbService = new ReimbService(reimbursementsDAO);
         ObjectMapper jsonMapper = new ObjectMapper();
         UserServlet userServlet = new UserServlet(userService, jsonMapper);
         AuthServlet authServlet = new AuthServlet(authService, jsonMapper);
+        ReimbServlet reimbServlet = new ReimbServlet(reimbService, jsonMapper);
 
         // Web server context and servlet configurations
         final String rootContext = "/pn";

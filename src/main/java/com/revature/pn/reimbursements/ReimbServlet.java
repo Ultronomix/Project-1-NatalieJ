@@ -17,13 +17,21 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.revature.pn.common.util.SecurityUtils.isFinanceManager;
+import static com.revature.pn.common.util.SecurityUtils.requesterOwned;
+
 public class ReimbServlet extends HttpServlet {
 
     private final ReimbService reimbService;
 
-    public ReimbServlet(ReimbService reimbService) {
+    private final ObjectMapper jsonMapper;
+
+    public ReimbServlet(ReimbService reimbService, ObjectMapper jsonMapper) {
         this.reimbService = reimbService;
+        this.jsonMapper = jsonMapper;
     }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,10 +52,11 @@ public class ReimbServlet extends HttpServlet {
         String reimb_idToSearchFor = req.getParameter("reimb_id");
         String status_idToSearchFor = req.getParameter("status_id");
         String type_idToSearchFor = req.getParameter("type_id");
+        String role_idToSearchFor = req.getParameter("role_id");
 
 
-        if ((!requester.getRole().equals("TRAVIS(ADMIN)") && !requester.getRole().equals("JANET(FINANCE MANAGERS)")) && !requester.getRole().equals("WINNIE(EMPLOYEES)")) {
-            resp.setStatus(403); // Forbidden
+        if (!isFinanceManager(requester) && !requesterOwned(requester, reimb_idToSearchFor)) {
+            resp.setStatus(403);
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not permitted to communicate with this endpoint.")));
             return;
         }
@@ -127,9 +136,10 @@ public class ReimbServlet extends HttpServlet {
 
         String userIdToSearchFor = req.getParameter("user_id");
         String reimb_idToSearchFor = req.getParameter("reimb_id");
+        String role_idToSearchFor = req.getParameter("role_id");
 
-        if ((!requester.getRole().equals("TRAVIS(ADMIN)") && !requester.getRole().equals("JANET(FINANCE MANAGER)"))
-                && !requester.getRole().equals("WINNIE(EMPLOYEES)")) {
+        if ((!requester.getRole().equals("ADMIN") && !requester.getRole().equals("FINANCE MANAGER"))
+                && !requester.getRole().equals("EMPLOYEE")) {
 
             resp.setStatus(403); // Forbidden
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not permitted to communicate with this endpoint.")));

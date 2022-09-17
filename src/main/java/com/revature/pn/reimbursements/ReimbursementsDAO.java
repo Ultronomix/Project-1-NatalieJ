@@ -51,7 +51,7 @@ public class ReimbursementsDAO {
         } catch (SQLException e) {
             System.err.println("Something went wrong when connection to database.");
             e.printStackTrace();
-            throw new DataSourceException(e);
+
         }
         return allReimbs;
     }

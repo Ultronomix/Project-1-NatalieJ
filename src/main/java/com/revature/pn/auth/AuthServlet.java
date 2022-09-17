@@ -32,7 +32,7 @@ public class AuthServlet extends HttpServlet {
 
     public AuthServlet(AuthService authService) {
 
-        this.authService = null;
+        this.authService = new AuthService();
         jsonMapper = new ObjectMapper();
     }
 
@@ -63,6 +63,8 @@ public class AuthServlet extends HttpServlet {
         } catch (InvalidRequestException | JsonMappingException e) {
             logger.warn("Error processing request at {}, error message: {}", LocalDateTime.now(), e.getMessage());
             resp.setStatus(400); // BAD REQUEST
+            //System.out.println(e);
+            e.printStackTrace();
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(400, e.getMessage())));
         } catch (AuthenticationException e) {
             logger.warn("Failed login at {}, error message: {}", LocalDateTime.now(), e.getMessage());
