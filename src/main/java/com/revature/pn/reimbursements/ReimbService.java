@@ -124,19 +124,22 @@ public class ReimbService {
         if (newType != null) {
             if (!newType.toUpperCase().equals("LODGING") && !newType.toUpperCase().equals("TRAVEL")
                     && !newType.toUpperCase().equals("FOOD")) {
-                // TODO add log
                 throw new InvalidRequestException("Type must be 'Lodging', 'Travel', 'Food' " +
                         "or 'Other'");
             }
             if (newType.toUpperCase().equals("LODGING")) {
-                newType = "200001";
+                newType = "1cf727ac-6b15-4df2-9ea8-6c9a50ef4a96";
             }
             if (newType.toUpperCase().equals("TRAVEL")) {
-                newType = "200002";
+                newType = "4b638fb9-9a93-42b5-915f-554b7f20c36b";
             }
             if (newType.toUpperCase().equals("FOOD")) {
-                newType = "200003";
+                newType = "cd5fd8bd-aedd-43d9-85b0-efac0ab6078c";
 
+            }
+
+            if (newType.toUpperCase().equals("OTHER")) {
+                newType = "bac1df62-691d-49da-92dc-b70f2cdc0c78";
             }
 
             reimbDAO.updateUserType(reimb_id, newType);

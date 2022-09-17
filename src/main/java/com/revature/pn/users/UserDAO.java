@@ -138,7 +138,7 @@ public class UserDAO {
     public String save(User user) {
 
         String sql = "INSERT INTO ERS_USERS (given_name, surname, email, username, password, role_id) " +
-                "VALUES (?, ?, ?, ?, ?,  '10cf1304-5f3b-47cb-a65b-73863fd2ad16')";
+                "VALUES (?, ?, ?, ?, ?, ?  'eba5e18f-9b97-4f30-adee-02feca21c1cf')";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 

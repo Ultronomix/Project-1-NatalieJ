@@ -16,7 +16,7 @@ public class User {
     private String password;
     private Role role;
 
-    public User(UserResponse userResponse, ObjectMapper jsonMapper) {
+    public User() {
         super();
     }
 
@@ -28,6 +28,10 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public User(UserResponse userResponse, ObjectMapper jsonMapper) {
+
     }
 
     public String getId() {

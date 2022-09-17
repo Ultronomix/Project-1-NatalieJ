@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 public class Project1App {
 
     private static Logger logger = LogManager.getLogger(Project1App.class);
+    private static String reimbServlet;
 
     public static void main(String[] args) throws LifecycleException {
 
@@ -40,7 +41,7 @@ public class Project1App {
         webServer.addContext(rootContext, docBase);
         webServer.addServlet(rootContext, "UserServlet", userServlet).addMapping("/users");
         webServer.addServlet(rootContext, "AuthServlet", authServlet).addMapping("/auth");
-
+        webServer.addServlet(rootContext, "ReimbServlet", reimbServlet).addMapping("/reimbursements");
         // Starting and awaiting web requests
         webServer.start();
         logger.info("pn web application successfully started");
