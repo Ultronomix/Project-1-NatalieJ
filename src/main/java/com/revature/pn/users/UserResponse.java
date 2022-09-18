@@ -83,7 +83,8 @@ public class UserResponse extends AuthService implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserResponse that = (UserResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(givenName, that.givenName) && Objects.equals(surname, that.surname) && Objects.equals(email, that.email) && Objects.equals(username, that.username) && Objects.equals(role, that.role);
+        return Objects.equals(id, that.id) && Objects.equals(givenName, that.givenName) && Objects.equals(surname, that.surname)
+                && Objects.equals(email, that.email) && Objects.equals(username, that.username) && Objects.equals(role, that.role);
     }
 
     @Override

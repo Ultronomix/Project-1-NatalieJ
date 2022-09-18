@@ -147,4 +147,10 @@ public class ReimbService {
 
         return new ResourceCreationResponse("Updated requests") ;
     }
+
+    public ResourceCreationResponse create(NewReimbursementRequest requestBody) {
+    }
+
+    public void updateReimb(UpdateReimbursementRequest requestPayload) {
+    }
 }

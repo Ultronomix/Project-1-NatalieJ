@@ -100,4 +100,7 @@ public class NewReimbursementRequest implements Request<Reimbursements> {
         extractEntity.setType_id(this.type_id);
         return null;
     }
+
+    public void setAuthor_id(Object userId) {
+    }
 }
