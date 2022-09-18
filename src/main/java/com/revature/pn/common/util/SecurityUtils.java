@@ -7,9 +7,16 @@ public class SecurityUtils {
     public static boolean isAdmin(UserResponse subject) {
         return subject.getRole().equals("ADMIN");
     }
+
     public static boolean isFinanceManager(UserResponse subject) {
         return subject.getRole().equals("FINANCE MANAGER");
     }
+
+    // Only to be used with GET user requests
+    public static boolean requesterOwned(UserResponse subject, String resourceId) {
+        return subject.getId().equals(resourceId);
+    }
+
    /* public static boolean isLead(UserResponse subject) {
         return subject.getRole().equals("LEAD");
     }
@@ -18,8 +25,6 @@ public class SecurityUtils {
    }
 
     */
-    // Only to be used with GET user requests
-    public static boolean requesterOwned(UserResponse subject, String resourceId) {
-        return subject.getId().equals(resourceId);
-    }
+
+
 }

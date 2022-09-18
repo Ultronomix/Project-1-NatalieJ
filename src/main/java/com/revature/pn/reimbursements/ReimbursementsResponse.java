@@ -1,14 +1,13 @@
 package com.revature.pn.reimbursements;
 
-import java.time.LocalDateTime;
 import java.io.Serializable;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ReimbursementsResponse implements Serializable {
 
     private String reimb_id;
-    private double amount;
+    private float amount;
     private String submitted;
     private String resolved;
     private String description;
@@ -19,7 +18,7 @@ public class ReimbursementsResponse implements Serializable {
 
     public ReimbursementsResponse (Reimbursements subject) {
         this.reimb_id = subject.getReimb_id();
-        this.amount = subject.getAmount();
+        this.amount = (float) subject.getAmount();
         this.submitted = subject.getSubmitted();
         this.resolved = subject.getResolved();
         this.description = subject.getDescription();
@@ -28,11 +27,6 @@ public class ReimbursementsResponse implements Serializable {
         this.status_id = subject.getStatus_id();
         this.type_id = subject.getType_id();
 
-
-
-    }
-
-    public ReimbursementsResponse(List<Reimbursements> reimbursements) {
     }
 
     @Override

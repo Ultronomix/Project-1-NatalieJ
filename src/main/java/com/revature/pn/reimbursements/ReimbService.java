@@ -23,7 +23,7 @@ public class ReimbService {
         List<Reimbursements> reimbursements = reimbDAO.getAllReimbs();
 
         for (Reimbursements reimbursement : reimbursements) {
-            result.add(new ReimbursementsResponse(reimbursements));
+            result.add(new ReimbursementsResponse((Reimbursements) reimbursements));
         }
 
         return result;
@@ -38,7 +38,7 @@ public class ReimbService {
             throw new InvalidRequestException("A user's id must be provided");
         }
 
-        return reimbDAO.getReimbByReimbId(reimb_id).map(ReimbursementsResponse::new).orElseThrow(ResourceNotFoundException::new);
+        return reimbDAO.getReimbByReimb_Id(reimb_id).map(ReimbursementsResponse::new).orElseThrow(ResourceNotFoundException::new);
 
 
     }
@@ -59,7 +59,7 @@ public class ReimbService {
         List<Reimbursements> reimbs = reimbDAO.getReimbByStatus(status_id);
 
         for (Reimbursements reimbursements : reimbs) {
-            result.add(new ReimbursementsResponse(reimbs));
+            result.add(new ReimbursementsResponse(reimbursements));
         }
 
         return result;
@@ -82,7 +82,7 @@ public class ReimbService {
         List<Reimbursements> reimbs = reimbDAO.getReimbByType(type_id);
 
         for (Reimbursements reimbursements : reimbs) {
-            result.add(new ReimbursementsResponse(reimbs));
+            result.add(new ReimbursementsResponse(reimbursements));
         }
 
         return result;
@@ -101,7 +101,7 @@ public class ReimbService {
             throw new ResourcePersistenceException("Request is not pending.");
         }
 
-        double newAmount = updateReimb.extractEntity().getAmount();
+        float newAmount = (float) updateReimb.extractEntity().getAmount();
         String newDescription = updateReimb.extractEntity().getDescription();
         String newType = updateReimb.extractEntity().getType_id();
 

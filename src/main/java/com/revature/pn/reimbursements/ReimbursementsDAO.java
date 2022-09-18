@@ -25,7 +25,7 @@ public class ReimbursementsDAO {
     private static Logger logger = LogManager.getLogger(ReimbursementsDAO.class);
 
     private final String baseSelect = "SELECT er.reimb_id, er.amount, er.submitted, er.resolved, " +
-            "er.description, er.payment_id, er.author_id, er.resolved_id, " +
+            "er.description, er.author_id, er.resolved_id, " +
             "ers.status, ert.type_ " +
             "FROM projectstuff.ers_reimbursements er " +
             "JOIN projectstuff.ers_reimbursement_statuses ers ON er.status_id = ers.status_id " +
@@ -56,7 +56,7 @@ public class ReimbursementsDAO {
         return allReimbs;
     }
 
-    public Optional<Reimbursements> getReimbByReimbId(String reimb_id) {
+    public Optional<Reimbursements> getReimbByReimb_Id(String reimb_id) {
 
         logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
 
@@ -240,10 +240,10 @@ public class ReimbursementsDAO {
     }
 
 
-    public boolean isPending(String reimbId) {
+    public boolean isPending(String reimb_Id) {
 
         try {
-            Optional<Reimbursements> reimb = getReimbByReimbId(reimbId);
+            Optional<Reimbursements> reimb = getReimbByReimb_Id(reimb_Id);
 
             if (reimb.get().getStatus_id().equals("PENDING")) {
                 return true;
