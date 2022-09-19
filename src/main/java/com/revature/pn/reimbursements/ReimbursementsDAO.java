@@ -16,7 +16,8 @@ public class ReimbursementsDAO {
 
     private static Logger logger = LogManager.getLogger(ReimbursementsDAO.class);
 
-    private final String baseSelect = "SELECT er.reimb_id, er.amount, er.submitted, er.resolved, er.description, er.payment_id, er.author_id, er.resolver_id, er.status_id, er.type_id, ers.status, ert.type, eu.user_id " +
+    private final String baseSelect = "SELECT er.reimb_id, er.amount, er.submitted, er.resolved, er.description," +
+            " er.author_id, er.resolver_id, er.status_id, er.type_id, ers.status, ert.type, eu.user_id " +
             "FROM ers_reimbursements er " +
             "JOIN ers_reimbursement_statuses ers " +
             "ON er.status_id = ers.status_id " +
@@ -113,7 +114,8 @@ public class ReimbursementsDAO {
             PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"reimb_id"});
             pstmt.setFloat(1, (float) newReimbursement.getAmount());
             pstmt.setString(2, newReimbursement.getDescription());
-            pstmt.setObject(3, UUID.fromString(newReimbursement.getAuthor_id()));
+//            pstmt.setObject(3, UUID.fromString(newReimbursement.getAuthor_id()));
+            pstmt.setString(3, newReimbursement.getAuthor_id());
             pstmt.setString(4, newReimbursement.getType_id());
 
             pstmt.executeUpdate();
@@ -140,11 +142,12 @@ public class ReimbursementsDAO {
             reimbursement.setReimb_id(rs.getString("reimb_id"));
             reimbursement.setAmount(rs.getFloat("amount"));
             reimbursement.setSubmitted(String.valueOf(rs.getTimestamp("submitted").toLocalDateTime()));
-            Timestamp resolvedTs = rs.getTimestamp("resolved");
-            reimbursement.setResolved(resolvedTs == null ? null : String.valueOf(resolvedTs.toLocalDateTime()));
+ //           reimbursement.setResolved(rs.getTimestamp("resolved").toLocalDateTime());
+//             reimbursement.setResolved(resolvedTs == null ? null : String.valueOf(resolvedTs.toLocalDateTime()));
             reimbursement.setDescription(rs.getString("description"));
             reimbursement.setAuthor_id(rs.getString("author_id"));
-            reimbursement.setResolverId(rs.getString("resolver_id"));
+            reimbursement.setResolved_id(rs.getString("resolver_id"));
+//            reimbursement.setResolverId(rs.getString("resolver_id"));
             reimbursement.setStatusId(rs.getString("status_id"));
             reimbursement.setType_id(rs.getString("type_id"));
 
@@ -169,7 +172,7 @@ public class ReimbursementsDAO {
             pstmt.setObject(4, UUID.fromString(reimb.getReimb_id()));
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated != 1) {
-                System.out.println("Sorry we didnt actually update anything.");
+                System.out.println("Sorry we didn't actually update anything.");
             }
         } catch (SQLException e) {
             logger.warn("Unable to persist updated reimbursement at {}", LocalDateTime.now());
@@ -186,7 +189,7 @@ public class ReimbursementsDAO {
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, UUID.fromString(newStatus.getAuthor_id()));
+            pstmt.setString(1, newStatus.getAuthor_id());
             pstmt.setString(2, newStatus.getStatus_id());
             pstmt.setObject(3, UUID.fromString(newStatus.getReimb_id()));
             pstmt.executeUpdate();

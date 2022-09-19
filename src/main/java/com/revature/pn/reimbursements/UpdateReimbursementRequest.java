@@ -58,7 +58,7 @@ public class UpdateReimbursementRequest implements Request<Reimbursements> {
     public Reimbursements extractEntity() {
            Reimbursements extractedEntity = new Reimbursements();
            extractedEntity.setStatus_id(this.status_id);
-           extractedEntity.setAmount(this.amount);
+           extractedEntity.setAmount((float) this.amount);
            extractedEntity.setDescription(this.description);
            extractedEntity.setType_id(this.type_id);
 

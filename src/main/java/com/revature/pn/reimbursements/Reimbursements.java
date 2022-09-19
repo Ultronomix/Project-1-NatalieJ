@@ -1,22 +1,23 @@
 package com.revature.pn.reimbursements;
 
-import java.util.Objects;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Reimbursements {
     private String reimb_id;
-    private double amount;
+    private float amount;
 
     private String submitted;
 
-    private String resolved;
+    private LocalDateTime resolved;
 
     private String description;
-    private LocalDateTime author_id;
-    private LocalDateTime resolved_id;
-    private String status_id;
+    private String author_id;
+    private String resolved_id;
     private String type_id;
     private String resolverId;
+
+    private String status_id;
 
     public String getReimb_id() {
         return reimb_id;
@@ -30,7 +31,7 @@ public class Reimbursements {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -42,11 +43,11 @@ public class Reimbursements {
         this.submitted = submitted;
     }
 
-    public String getResolved() {
+    public LocalDateTime getResolved() {
         return resolved;
     }
 
-    public void setResolved(String resolved) {
+    public void setResolved(LocalDateTime resolved) {
         this.resolved = resolved;
     }
 
@@ -59,19 +60,19 @@ public class Reimbursements {
     }
 
     public String getAuthor_id() {
-        return String.valueOf(author_id);
+        return author_id;
     }
 
     public void setAuthor_id(String author_id) {
-        this.author_id = LocalDateTime.parse(author_id);
+        this.author_id = author_id;
     }
 
     public String getResolved_id() {
-        return String.valueOf(resolved_id);
+        return this.resolved_id;
     }
 
     public void setResolved_id(String resolved_id) {
-        this.resolved_id = LocalDateTime.parse(resolved_id);
+        this.resolverId = resolved_id;
     }
 
     public String getStatus_id() {
@@ -95,14 +96,14 @@ public class Reimbursements {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reimbursements that = (Reimbursements) o;
-        return amount == that.amount && Objects.equals(reimb_id, that.reimb_id) && Objects.equals(submitted, that.submitted) && Objects.equals(resolved, that.resolved)
+        return amount == that.amount && Objects.equals(reimb_id, that.reimb_id) && Objects.equals(submitted, that.submitted) /*&& Objects.equals(resolved, that.resolved) */
                 && Objects.equals(description, that.description) && Objects.equals(author_id, that.author_id) && Objects.equals(resolved_id, that.resolved_id)
                 && Objects.equals(status_id, that.status_id) && Objects.equals(type_id, that.type_id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reimb_id, amount, submitted, resolved, description, author_id, resolved_id, status_id, type_id);
+        return Objects.hash(reimb_id, amount, submitted, resolved, description, author_id, resolverId, status_id, type_id);
     }
 
     @Override
@@ -111,10 +112,10 @@ public class Reimbursements {
                 "reimb_id='" + reimb_id + '\'' +
                 ", amount=" + amount +
                 ", submitted='" + submitted + '\'' +
-                ", resolved='" + resolved + '\'' +
+/*                ", resolved='" + resolved + '\'' + */
                 ", description='" + description + '\'' +
                 ", author_id='" + author_id + '\'' +
-                ", resolver_id='" + resolved_id + '\'' +
+                ", resolved_id='" + resolved_id + '\''   +
                 ", status_id='" + status_id + '\'' +
                 ", type_id='" + type_id + '\'' +
                 '}';
@@ -128,7 +129,7 @@ public class Reimbursements {
         this.resolverId = resolverId;
     }
 
-    public Object getResolverId() {
+    public String getResolverId() {
         return resolverId;
     }
 
@@ -139,12 +140,12 @@ public class Reimbursements {
         this.status_id = statusId;
     }
 
-    public String getResolver_id() {
-        return this.resolverId;
-    }
+//    public String getResolver_id() {
+ //       return this.resolverId;
+//    }
 
-    public void setResolver_id(String resolver_id) {
-        this.resolverId = resolver_id;
-    }
+  //  public void setResolver_id(String resolver_id) {
+//       this.resolverId = resolver_id;
+//    }
 
 }
