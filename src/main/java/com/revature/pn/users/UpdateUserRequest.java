@@ -1,5 +1,7 @@
 package com.revature.pn.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class UpdateUserRequest {
 
     private String userId;
@@ -59,7 +61,9 @@ public class UpdateUserRequest {
 
     public User extractEntity() {
 
-        User extractedEntity = new User();
+        String userResponse = userId;
+        ObjectMapper jsonMapper = new ObjectMapper();
+        User extractedEntity = new User(userResponse, jsonMapper);
         extractedEntity.setUsername(this.username);
         extractedEntity.setPassword(this.password);
         extractedEntity.setEmail(this.email);
@@ -73,7 +77,5 @@ public class UpdateUserRequest {
         return "UpdateUserRequest [email=" + email + ", givenName=" + givenName + ", password=" + password
                 + ", surname=" + surname + ", userId=" + userId + ", username=" + username + "]";
     }
-
-
 
 }

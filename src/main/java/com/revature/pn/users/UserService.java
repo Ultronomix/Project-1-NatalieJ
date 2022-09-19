@@ -4,12 +4,16 @@ import com.revature.pn.common.ResourceCreationResponse;
 import com.revature.pn.common.exceptions.InvalidRequestException;
 import com.revature.pn.common.exceptions.ResourceNotFoundException;
 import com.revature.pn.common.exceptions.ResourcePersistenceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UserService {
+
+    private static Logger logger = LogManager.getLogger(UserService.class);
 
     private final UserDAO userDAO;
 
@@ -18,28 +22,63 @@ public class UserService {
     }
 
     public List<UserResponse> getAllUsers() {
+
         return userDAO.getAllUsers()
                 .stream()
                 .map(UserResponse::new)
                 .collect(Collectors.toList());
+
     }
 
-    public UserResponse getUserById(String id) {
+    public UserResponse getUserById(String userId) {
 
-        if (id == null || id.length() <= 0) {
+        if (userId == null || userId.length() <= 0) {
             throw new InvalidRequestException("A non-empty id must be provided!");
         }
 
         try {
 
-            UUID uuid = UUID.fromString(id);
-            return (UserResponse) userDAO.findUserById(uuid)
+            return userDAO.findUserById(UUID.fromString(userId))
                     .map(UserResponse::new)
                     .orElseThrow(ResourceNotFoundException::new);
 
-        } catch (Throwable e) {
+        } catch (IllegalArgumentException e) {
             throw new InvalidRequestException("An invalid UUID string was provided.");
         }
+
+    }
+
+    public void updateUser(UpdateUserRequest updateUserRequest) {
+
+        System.out.println(updateUserRequest);
+
+        User userToUpdate = userDAO.findUserById(UUID.fromString(updateUserRequest.getUserId()))
+                .orElseThrow(ResourceNotFoundException::new);
+
+
+        if (updateUserRequest.getGivenName() != null) {
+            userToUpdate.setGivenName(updateUserRequest.getGivenName());
+        }
+
+        if (updateUserRequest.getSurname() != null) {
+            userToUpdate.setSurname(updateUserRequest.getSurname());
+        }
+
+        if (updateUserRequest.getUsername() != null) {
+            // you also need to make sure that the new username is not already taken
+            userToUpdate.setUsername(updateUserRequest.getUsername());
+        }
+
+        if (updateUserRequest.getEmail() != null) {
+            // you also need to make sure that the new email is not already taken
+            userToUpdate.setEmail(updateUserRequest.getEmail());
+        }
+
+        if (updateUserRequest.getPassword() != null) {
+            userToUpdate.setPassword(updateUserRequest.getPassword());
+        }
+
+        userDAO.updateUser(userToUpdate);
 
     }
 
@@ -76,9 +115,9 @@ public class UserService {
         }
 
         User userToPersist = newUser.extractEntity();
-        String newUserId = userDAO.save();
+        String newUserId = userDAO.save(userToPersist);
         return new ResourceCreationResponse(newUserId);
 
     }
-
 }
+

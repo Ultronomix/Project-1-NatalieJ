@@ -16,7 +16,7 @@ public class User {
     private String password;
     private String role;
 
-    public User(UserResponse userResponse, ObjectMapper jsonMapper) {
+    public User(String userResponse, ObjectMapper jsonMapper) {
         super();
     }
 
@@ -28,10 +28,6 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = String.valueOf(role);
-    }
-
-    public User() {
-
     }
 
     public String getId() {
@@ -95,9 +91,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(givenName, user.givenName) && Objects.equals(surname, user.surname)
-                && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password)
-                && Objects.equals(role, user.role);
+        return Objects.equals(id, user.id) && Objects.equals(givenName, user.givenName) && Objects.equals(surname, user.surname) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(role, user.role);
     }
 
     @Override
@@ -126,7 +120,7 @@ public class User {
     public void setUserId(String user_id) {
     }
 
-    public void setIsActive(String is_active) {
+    public void setIsActive(boolean is_active) {
     }
 
     public boolean getIsActive() {

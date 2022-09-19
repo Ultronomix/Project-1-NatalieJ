@@ -1,8 +1,8 @@
 package com.revature.pn.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pn.common.datasource.ConnectionFactory;
 import com.revature.pn.common.exceptions.DataSourceException;
-import com.revature.pn.common.role.Role;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -184,15 +184,18 @@ public class UserDAO {
         logger.info("Attempting to map the result set of user info at {}", LocalDateTime.now());
         List<User> users = new ArrayList<>();
         while (rs.next()) {
-            User user = new User();
+            String userResponse = new String();
+            ObjectMapper jsonMapper = new ObjectMapper();
+            User user = new User(userResponse, jsonMapper);
             user.setUserId(rs.getString("user_id"));
             user.setUsername(rs.getString("username"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
             user.setGivenName(rs.getString("given_name"));
             user.setSurname(rs.getString("surname"));
-            user.setIsActive(rs.getString("is_active"));
-            user.setRole(String.valueOf(new Role(rs.getString("role_id"), rs.getString("role"))));
+            user.setIsActive(Boolean.parseBoolean(rs.getString("is_active")));
+            user.setRole(rs.getString("role"));
+//            user.setRole(String.valueOf(new Role(rs.getString("role_id"), rs.getString("role"))));
             users.add(user);
         }
 
@@ -224,4 +227,14 @@ public class UserDAO {
     public String save() {
         return save();
     }
+
+    public Optional<Object> getUserByUserId() {
+        return getUserByUserId();
+    }
+
+    public User register(User userToPersist) {
+        return userToPersist;
+    }
+
+
 }

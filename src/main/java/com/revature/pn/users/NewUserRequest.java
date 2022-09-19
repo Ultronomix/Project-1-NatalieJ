@@ -12,7 +12,7 @@ public class NewUserRequest implements Request<User> {
     private String email;
     private String username;
     private String password;
-    private UserResponse userResponse;
+    private String userResponse;
     private ObjectMapper jsonMapper;
 
     public String getGivenName() {

@@ -15,10 +15,6 @@ public class UserResponse implements Serializable {
     private boolean isActive;
     private String role;
 
-    public UserResponse(Object o) {
-    }
-
-
     public String getUserId() {
         return userId;
     }
@@ -82,7 +78,7 @@ public class UserResponse implements Serializable {
         this.givenName = subject.getGivenName();
         this.surname = subject.getSurname();
         this.isActive = subject.getIsActive();
-        this.role = subject.getRole();
+        this.role = String.valueOf(subject.getRole());
     }
 
     @Override
@@ -111,7 +107,4 @@ public class UserResponse implements Serializable {
                 '}';
     }
 
-    public String getId() {
-        return userId;
-    }
 }

@@ -108,5 +108,6 @@ public class NewReimbursementRequest implements Request<Reimbursements> {
 
 
     public void setAuthor_Id(String userId) {
+        this.author_id = userId;
     }
 }

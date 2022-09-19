@@ -53,7 +53,7 @@ public class IsActiveService {
                 .orElseThrow(ResourceNotFoundException::new);
 
         if (updateIsActive.getIsActive() != null) {
-            userToUpdate.setIsActive(updateIsActive.getIsActive());
+            userToUpdate.setIsActive(Boolean.parseBoolean(updateIsActive.getIsActive()));
         }
 
         userDAO.updateUser(userToUpdate);

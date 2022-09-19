@@ -14,7 +14,12 @@ public class SecurityUtils {
 
     // Only to be used with GET user requests
     public static boolean requesterOwned(UserResponse subject, String resourceId) {
-        return subject.getId().equals(resourceId);
+        if(resourceId != null) {
+            return subject.getUserId().equals(resourceId);
+        }
+        else {
+            return false;
+        }
     }
 
    /* public static boolean isLead(UserResponse subject) {
