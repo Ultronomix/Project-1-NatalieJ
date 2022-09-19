@@ -112,13 +112,13 @@ public class Reimbursements {
                 "reimb_id='" + reimb_id + '\'' +
                 ", amount=" + amount +
                 ", submitted='" + submitted + '\'' +
-/*                ", resolved='" + resolved + '\'' + */
+/*              ", resolved='" + resolved + '\'' + */
                 ", description='" + description + '\'' +
                 ", author_id='" + author_id + '\'' +
                 ", resolved_id='" + resolved_id + '\''   +
                 ", status_id='" + status_id + '\'' +
                 ", type_id='" + type_id + '\'' +
-                '}';
+                "}";
     }
 
     //public void setReimbByStatus(boolean reimbByStatus) {

@@ -71,7 +71,7 @@ public class ReimbServlet extends HttpServlet {
                 resp.getWriter().write(jsonMapper.writeValueAsString(foundReimb));
             }
         } catch (InvalidRequestException | JsonMappingException e) {
-
+            e.printStackTrace();
             resp.setStatus(400); // BAD REQUEST;
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(400, e.getMessage())));
             logger.warn("Unable to locate reimbursement at {}, error message: {}", LocalDateTime.now(), e.getMessage());

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ReimbursementsResponse implements Serializable {
-
+public ReimbursementsResponse() {}
     private String reimb_id;
     private float amount;
     private String submitted;
@@ -56,7 +56,7 @@ public class ReimbursementsResponse implements Serializable {
                 ", resolver_id='" + resolved_id + '\'' +
                 ", status_id='" + status_id + '\'' +
                 ", type_id='" + type_id + '\'' +
-                '}';
+                "}";
     }
 
  //   public Object orElseThrow(Object aNew) {
