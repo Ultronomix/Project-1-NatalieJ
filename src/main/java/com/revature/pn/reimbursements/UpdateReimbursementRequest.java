@@ -95,4 +95,14 @@ public class UpdateReimbursementRequest implements Request<Reimbursements> {
     public void setReimbByStatus_id(Object reimbByStatus_id) {
         this.reimbByStatus_id = reimbByStatus_id;
     }
+
+    public String getAuthor_id() {
+        String Author_id = null;
+        return Author_id;
+    }
+
+
+    public Object reimbByReimbId() {
+        return getReimbByReimbId();
+    }
 }

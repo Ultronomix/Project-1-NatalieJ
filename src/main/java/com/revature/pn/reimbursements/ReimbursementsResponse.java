@@ -58,4 +58,8 @@ public class ReimbursementsResponse implements Serializable {
                 ", type_id='" + type_id + '\'' +
                 '}';
     }
+
+    public Object orElseThrow(Object aNew) {
+        return null;
+    }
 }

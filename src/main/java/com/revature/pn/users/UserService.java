@@ -1,6 +1,5 @@
 package com.revature.pn.users;
 
-import com.revature.pn.auth.Credentials;
 import com.revature.pn.common.ResourceCreationResponse;
 import com.revature.pn.common.exceptions.InvalidRequestException;
 import com.revature.pn.common.exceptions.ResourceNotFoundException;
@@ -34,11 +33,11 @@ public class UserService {
         try {
 
             UUID uuid = UUID.fromString(id);
-            return userDAO.findUserById(uuid)
+            return (UserResponse) userDAO.findUserById(uuid)
                     .map(UserResponse::new)
                     .orElseThrow(ResourceNotFoundException::new);
 
-        } catch (IllegalArgumentException e) {
+        } catch (Throwable e) {
             throw new InvalidRequestException("An invalid UUID string was provided.");
         }
 
@@ -77,12 +76,9 @@ public class UserService {
         }
 
         User userToPersist = newUser.extractEntity();
-        String newUserId = userDAO.save(userToPersist);
+        String newUserId = userDAO.save();
         return new ResourceCreationResponse(newUserId);
 
     }
 
-    public void authenticate(Credentials credentialsStub) {
-        return;
-    }
 }

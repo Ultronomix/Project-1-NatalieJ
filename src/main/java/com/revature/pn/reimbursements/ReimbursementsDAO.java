@@ -2,126 +2,97 @@ package com.revature.pn.reimbursements;
 
 import com.revature.pn.common.datasource.ConnectionFactory;
 import com.revature.pn.common.exceptions.DataSourceException;
-import com.revature.pn.common.exceptions.ResourceNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-
+import java.util.UUID;
 
 public class ReimbursementsDAO {
 
     private static Logger logger = LogManager.getLogger(ReimbursementsDAO.class);
 
-    private final String baseSelect = "SELECT er.reimb_id, er.amount, er.submitted, er.resolved, " +
-            "er.description, er.author_id, er.resolved_id, " +
-            "ers.status, ert.type_ " +
-            "FROM projectstuff.ers_reimbursements er " +
-            "JOIN projectstuff.ers_reimbursement_statuses ers ON er.status_id = ers.status_id " +
-            "JOIN projectstuff.ers_reimbursement_types ert ON er.type_id = ert.type_id ";
+    private final String baseSelect = "SELECT er.reimb_id, er.amount, er.submitted, er.resolved, er.description, er.payment_id, er.author_id, er.resolver_id, er.status_id, er.type_id, ers.status, ert.type, eu.user_id " +
+            "FROM ers_reimbursements er " +
+            "JOIN ers_reimbursement_statuses ers " +
+            "ON er.status_id = ers.status_id " +
+            "JOIN ers_reimbursement_types ert " +
+            "ON er.type_id = ert.type_id " +
+            "JOIN ers_users eu " +
+            "ON er.author_id = eu.user_id " +
+            "LEFT JOIN ers_users " +
+            "ON er.resolver_id = eu.user_id ";
 
-    public List<Reimbursements> getAllReimbs() {
+    public List<Reimbursements> getAllReimbursement() {
 
         logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
-
 
         List<Reimbursements> allReimbs = new ArrayList<>();
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             Statement stmt = conn.createStatement();
-            ResultSet rs = ((java.sql.Statement) stmt).executeQuery(baseSelect);
+            ResultSet rs = stmt.executeQuery(baseSelect);
 
             allReimbs = mapResultSet(rs);
-
-            logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
-
+            logger.info("Successful database connection at {}", LocalDateTime.now());
 
         } catch (SQLException e) {
             System.err.println("Something went wrong when connection to database.");
             e.printStackTrace();
-
+            logger.fatal("Unsuccessful database connection at {}, error message: {}", LocalDateTime.now(), e.getMessage());
         }
+
         return allReimbs;
     }
 
-    public Optional<Reimbursements> getReimbByReimb_Id(String reimb_id) {
+    public Optional<Reimbursements> findReimbById(String reimbId) {
 
-        logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
+        logger.info("Attempting to search by reimbursement id at {}", LocalDateTime.now());
 
-
-        String sql = baseSelect + "WHERE er.reimb_id = ? ";
+        String sql = baseSelect + "WHERE er.reimb_id = ?";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, reimb_id);
+            pstmt.setObject(1, UUID.fromString(reimbId));
             ResultSet rs = pstmt.executeQuery();
 
-            logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
 
+            Optional<Reimbursements> _reimb = mapResultSet(rs).stream().findFirst();
 
-            return mapResultSet(rs).stream().findFirst();
+            if (_reimb.isPresent()) {
+                logger.info("Reimbursement found by reimbursement id at {}", LocalDateTime.now());
+            }
+
+            return _reimb;
 
         } catch (SQLException e) {
             logger.warn("Unable to process reimbursement id search at {}, error message: {}", LocalDateTime.now(), e.getMessage());
             e.printStackTrace();
-
             throw new DataSourceException(e);
         }
+
     }
 
-    public Optional<Reimbursements> findReimbByStatus_id(String status_id) {
+    public Optional<Reimbursements> findReimbByStatus(String status) {
 
-        logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
+        logger.info("Attempting to search by reimbursement status at {}", LocalDateTime.now());
 
-
-        String sql = baseSelect + "WHERE er.status_id = ? ";
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, status_id);
-            ResultSet rs = pstmt.executeQuery();
-
-            return mapResultSet(rs).stream().findFirst();
-
-        } catch (SQLException e) {
-
-            throw new DataSourceException(e);
-        }
-    }
-
-    public List<Reimbursements> getReimbByStatus(String status) {
-
-        logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
-
-
-        String sql = baseSelect + "WHERE ers.status = ? ";
-        List<Reimbursements> reimbsStatus = new ArrayList<>();
+        String sql = baseSelect + "WHERE er.status = ?";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             logger.info("Reimbursement found by status at {}", LocalDateTime.now());
-
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, status.toUpperCase());
+            pstmt.setString(1, status);
             ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
 
-            reimbsStatus = mapResultSet(rs);
-
-            return reimbsStatus;
 
         } catch (SQLException e) {
             logger.warn("Unable to process reimbursement status search at {}, error message: {}", LocalDateTime.now(), e.getMessage());
@@ -130,200 +101,107 @@ public class ReimbursementsDAO {
         }
     }
 
-    public List<Reimbursements> getReimbByType(String type) {
+    public String save(Reimbursements newReimbursement) {
 
-        logger.info("Attempting to connect to the database at {}", LocalDateTime.now());
-
-
-        String sql = baseSelect + "WHERE ert.type_ = ? ";
-        List<Reimbursements> reimbsType = new ArrayList<>();
+        logger.info("Attempting to persist new reimbursement at {}", LocalDateTime.now());
+        String sql = "INSERT INTO ers_reimbursements (amount, description, author_id, status_id, type_id) " +
+                "VALUES (?, ?, ?, 'PENDING', ?)";
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, type.toUpperCase());
-            ResultSet rs = pstmt.executeQuery();
-
-            reimbsType = mapResultSet(rs);
-
-            return reimbsType;
-
-        } catch (Exception e) {
-
-            throw new DataSourceException(e);
-        }
-    }
-
-    public void updateRequestStatus(String status, String reimb_id, String resolver_id) {
-
-
-        String sql = "UPDATE projectstuff.ers_reimbursements SET status_id = ?, resolved = ?, resolved_id = ? WHERE reimb_id = ? ";
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, status);
-            pstmt.setString(2, LocalDateTime.now().format(format));
-            pstmt.setString(3, resolver_id);
-            pstmt.setString(4, reimb_id);
-
-            // ResultSet rs =
-            pstmt.executeUpdate();
-
-
-        } catch (SQLException e) {
-
-            throw new DataSourceException(e);
-        }
-    }
-
-    public String updateUserAmount(String reimbId, double newAmount) {
-
-
-        String sql = "UPDATE projectstuff.ers_reimbursements SET amount = ? WHERE reimb_id = ? ";
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setDouble(1, newAmount);
-            pstmt.setString(2, reimbId);
-
-            pstmt.executeUpdate();
-
-            return "Amount ";
-        } catch (SQLException e) {
-
-            throw new DataSourceException(e);
-        }
-    }
-
-    public String updateUserDescription(String reimbId, String description) {
-
-
-        String sql = "UPDATE projectstuff.ers_reimbursements SET description = ? WHERE reimb_id = ? ";
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, description);
-            pstmt.setString(2, reimbId);
-            System.out.println(pstmt);
-            pstmt.executeUpdate();
-
-            return "Description ";
-        } catch (SQLException e) {
-
-            throw new DataSourceException(e);
-        }
-    }
-
-
-    public String updateUserType(String reimbId, String type_id) {
-
-
-        String sql = "UPDATE projectstuff.ers_reimbursements SET type_id = ? WHERE reimb_id = ?";
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, type_id);
-            pstmt.setString(2, reimbId);
-            System.out.println(pstmt);
-            pstmt.executeUpdate();
-
-            return "Type ";
-        } catch (SQLException e) {
-
-            throw new DataSourceException(e);
-        }
-    }
-
-
-    public boolean isPending(String reimb_Id) {
-
-        try {
-            Optional<Reimbursements> reimb = getReimbByReimb_Id(reimb_Id);
-
-            if (reimb.get().getStatus_id().equals("PENDING")) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NoSuchElementException e) {
-
-            throw new ResourceNotFoundException();
-        }
-    }
-  /*  public String newReimbursementRequest(Reimbursements reimbursements) {
-        String baseSelect = " INSERT INTO projectstuff.ers_reimbursements (reimb_id, amount, submitted, resolved, description,
-                 author_id, resolved_id, status_id, type_id) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(baseSelect, new String[]{"reimb_id"});
-            pstmt.setString(1, reimbursements.getReimb_id());
-            pstmt.setString(2, String.valueOf(reimbursements.getAmount()));
-            pstmt.setString(3, reimbursements.getSubmitted());
-            pstmt.setString(4, reimbursements.getResolved());
-            pstmt.setString(5, reimbursements.getDescription());
-            pstmt.setString(7, reimbursements.getAuthor_id());
-            pstmt.setString(8, reimbursements.getResolved_id());
-            pstmt.setString(9, reimbursements.getStatus_id());
-            pstmt.setString(10, reimbursements.getType_id());
-
+            logger.info("New reimbursement successfully persisted at {}", LocalDateTime.now());
+            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"reimb_id"});
+            pstmt.setFloat(1, (float) newReimbursement.getAmount());
+            pstmt.setString(2, newReimbursement.getDescription());
+            pstmt.setObject(3, UUID.fromString(newReimbursement.getAuthor_id()));
+            pstmt.setString(4, newReimbursement.getType_id());
 
             pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();
             rs.next();
-            reimbursements.setReimb_id(rs.getString("reimb_id"));
+            newReimbursement.setReimb_id(rs.getString("reimb_id"));
 
-            } catch (SQLException e) {
-            log("ERROR", e.getMessage());
+        } catch (SQLException e) {
+            logger.warn("Unable to persist data at {}, error message: {}", LocalDateTime.now(), e.getMessage());
+            e.printStackTrace();
         }
-        log("INFO", "Successfully persisted new user with id: " + reimbursements.getReimb_id());
 
-        return reimbursements.getReimb_id();
+        return newReimbursement.getReimb_id();
+
     }
-*/
+
     private List<Reimbursements> mapResultSet(ResultSet rs) throws SQLException {
 
         List<Reimbursements> reimbursements = new ArrayList<>();
-
         while (rs.next()) {
+            logger.info("Attempting to map the result set of reimbursement info at {}", LocalDateTime.now());
             Reimbursements reimbursement = new Reimbursements();
             reimbursement.setReimb_id(rs.getString("reimb_id"));
-            reimbursement.setAmount(rs.getInt("amount"));
-            reimbursement.setSubmitted(rs.getString("submitted"));
-            reimbursement.setResolved(rs.getString("resolved"));
+            reimbursement.setAmount(rs.getFloat("amount"));
+            reimbursement.setSubmitted(String.valueOf(rs.getTimestamp("submitted").toLocalDateTime()));
+            Timestamp resolvedTs = rs.getTimestamp("resolved");
+            reimbursement.setResolved(resolvedTs == null ? null : String.valueOf(resolvedTs.toLocalDateTime()));
             reimbursement.setDescription(rs.getString("description"));
             reimbursement.setAuthor_id(rs.getString("author_id"));
-            reimbursement.setResolved_id(rs.getString("resolver_id"));
-            reimbursement.setStatus_id(rs.getString("status_id"));
+            reimbursement.setResolverId(rs.getString("resolver_id"));
+            reimbursement.setStatusId(rs.getString("status_id"));
             reimbursement.setType_id(rs.getString("type_id"));
 
+            reimbursements.add(reimbursement);
         }
 
         return reimbursements;
     }
 
+    public void updateReimb(Reimbursements reimb) {
+        logger.info("Attempting to update reimbursement info at {}", LocalDateTime.now());
+        System.out.println(reimb);
+        String sql = "UPDATE ers_reimbursements " +
+                "SET amount = ?, description = ?, type_id = ? " +
+                "WHERE reimb_id = ?";
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-    public void log(String level, String message) {
-
-
-        try {
-            File logFile = new File("logs/app.log");
-            logFile.createNewFile();
-            BufferedWriter logWriter = new BufferedWriter(new FileWriter(logFile));
-            logWriter.write(String.format("[%s] at %s logged: [%s] %s\n", Thread.currentThread().getName(), LocalDate.now(), level.toUpperCase(), message));
-            logWriter.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setFloat(1, (float) reimb.getAmount());
+            pstmt.setString(2, reimb.getDescription());
+            pstmt.setString(3, reimb.getType_id());
+            pstmt.setObject(4, UUID.fromString(reimb.getReimb_id()));
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated != 1) {
+                System.out.println("Sorry we didnt actually update anything.");
+            }
+        } catch (SQLException e) {
+            logger.warn("Unable to persist updated reimbursement at {}", LocalDateTime.now());
+            e.printStackTrace();
         }
     }
 
-    public void UpdateReimbursementRequest(Reimbursements statusAndResolver) {
+    public void updateStatus(Reimbursements newStatus) {
+
+        logger.info("Attempting to update reimbursement status at {}", LocalDateTime.now());
+        String sql = "UPDATE ers_reimbursements " +
+                "SET resolved = now(), resolver_id = ?, status_id = ?  " +
+                "WHERE reimb_id = ?";
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, UUID.fromString(newStatus.getAuthor_id()));
+            pstmt.setString(2, newStatus.getStatus_id());
+            pstmt.setObject(3, UUID.fromString(newStatus.getReimb_id()));
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            logger.warn("Unable to persist updated reimbursement status at {}, error message: {}", LocalDateTime.now(), e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public String findReimbursments(String reimbByReimbId) {
+        return reimbByReimbId;
+    }
+
+    public String getReimbByReimbId(String reimbByReimbId) {
+        return reimbByReimbId;
     }
 }

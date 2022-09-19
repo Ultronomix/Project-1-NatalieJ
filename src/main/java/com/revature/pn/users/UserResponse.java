@@ -1,41 +1,46 @@
 package com.revature.pn.users;
 
-import com.revature.pn.auth.AuthService;
-
 import java.io.Serializable;
 import java.util.Objects;
 
-// Example of a response DTO
-public class UserResponse extends AuthService implements Serializable {
+public class UserResponse implements Serializable {
 
-    private String id;
+    private String userId;
+
+    private String username;
+    private String email;
     private String givenName;
     private String surname;
-    private String email;
-    private String username;
+
+    private boolean isActive;
     private String role;
-    private Object userId;
 
-    public UserResponse(User subject) {
-        super();
-        this.id = subject.getId();
-        this.givenName = subject.getGivenName();
-        this.surname = subject.getSurname();
-        this.email = subject.getEmail();
-        this.username = subject.getUsername();
-        this.role = subject.getRole().getName();
+    public UserResponse(Object o) {
     }
 
-    public UserResponse(String userDAO) {
 
+    public String getUserId() {
+        return userId;
     }
 
-    public String getId() {
-        return id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getGivenName() {
@@ -54,20 +59,12 @@ public class UserResponse extends AuthService implements Serializable {
         this.surname = surname;
     }
 
-    public String getEmail() {
-        return email;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public String getRole() {
@@ -78,37 +75,43 @@ public class UserResponse extends AuthService implements Serializable {
         this.role = role;
     }
 
+    public UserResponse(User subject) {
+        this.userId = subject.getUserId();
+        this.username = subject.getUsername();
+        this.email = subject.getEmail();
+        this.givenName = subject.getGivenName();
+        this.surname = subject.getSurname();
+        this.isActive = subject.getIsActive();
+        this.role = subject.getRole();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserResponse that = (UserResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(givenName, that.givenName) && Objects.equals(surname, that.surname)
-                && Objects.equals(email, that.email) && Objects.equals(username, that.username) && Objects.equals(role, that.role);
+        return isActive == that.isActive && Objects.equals(userId, that.userId) && Objects.equals(username, that.username) && Objects.equals(email, that.email) && Objects.equals(givenName, that.givenName) && Objects.equals(surname, that.surname) && Objects.equals(role, that.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, givenName, surname, email, username, role);
+        return Objects.hash(userId, username, email, givenName, surname, isActive, role);
     }
 
     @Override
     public String toString() {
         return "UserResponse{" +
-                "id='" + id + '\'' +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", givenName='" + givenName + '\'' +
                 ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", role='" + role + '\'' +
+                ", isActive=" + isActive +
+                ", role_='" + role + '\'' +
                 '}';
     }
 
-    public Object getUserId() {
+    public String getId() {
         return userId;
-    }
-
-    public void setUserId(Object userId) {
-        this.userId = userId;
     }
 }

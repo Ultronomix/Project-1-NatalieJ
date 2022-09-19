@@ -16,7 +16,7 @@ public class Reimbursements {
     private LocalDateTime resolved_id;
     private String status_id;
     private String type_id;
-    private Object resolverId;
+    private String resolverId;
 
     public String getReimb_id() {
         return reimb_id;
@@ -120,10 +120,11 @@ public class Reimbursements {
                 '}';
     }
 
-    public void setReimbByStatus(boolean reimbByStatus) {
-    }
+    //public void setReimbByStatus(boolean reimbByStatus) {
+    //    this.setReimbByStatus();
+    //}
 
-    public void setResolverId(Object resolverId) {
+    public void setResolverId(String resolverId) {
         this.resolverId = resolverId;
     }
 
@@ -131,9 +132,19 @@ public class Reimbursements {
         return resolverId;
     }
 
-    public void setReimbByStatus_id(boolean reimbByStatus_id) {
+    //public void setReimbByStatus_id(boolean reimbByStatus_id) {
+    //}
+
+    public void setStatusId(String statusId) {
+        this.status_id = statusId;
     }
 
-    public void setStatusId(Object statusId) {
+    public String getResolver_id() {
+        return this.resolverId;
     }
+
+    public void setResolver_id(String resolver_id) {
+        this.resolverId = resolver_id;
+    }
+
 }

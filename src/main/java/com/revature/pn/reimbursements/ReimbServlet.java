@@ -16,13 +16,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.revature.pn.common.util.SecurityUtils.isFinanceManager;
+import static com.revature.pn.common.util.SecurityUtils.requesterOwned;
 
 
 public class ReimbServlet extends HttpServlet {
+
     private static Logger logger = LogManager.getLogger(ReimbServlet.class);
 
     private final ReimbService reimbService;
-
     private final ObjectMapper jsonMapper;
 
     public ReimbServlet(ReimbService reimbService, ObjectMapper jsonMapper) {
@@ -30,96 +34,69 @@ public class ReimbServlet extends HttpServlet {
         this.jsonMapper = jsonMapper;
     }
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-
         resp.setContentType("application/json");
 
         HttpSession reimbSession = req.getSession(false);
 
-        if (reimbSession == null) {
-            logger.warn("User not logged in, attempted to access information at {}", LocalDateTime.now());
+        if(reimbSession == null) {
+            logger.warn("User who is not logged in, attempted to access information at {}", LocalDateTime.now());
 
             resp.setStatus(401);
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(401, "Requester not authenticated with server, log in")));
             return;
         }
 
-        UserResponse requester = (UserResponse) reimbSession.getAttribute("loggedInUser");
+        String idToSearchFor = req.getParameter("authorId");
 
-        String reimb_idToSearchFor = req.getParameter("reimb_id");
-        String status_idToSearchFor = req.getParameter("status_id");
-        String type_idToSearchFor = req.getParameter("type_id");
-        String role_idToSearchFor = req.getParameter("role_id");
+        UserResponse requester = (UserResponse) reimbSession.getAttribute("authUser");
 
-
-        if ((!requester.getRole().equals("ADVISORS(FINANCE MANAGERS)"))) {
+        if (!isFinanceManager(requester) && !requesterOwned(requester, idToSearchFor)) {
             logger.warn("Requester with invalid permissions attempted to view information at {}, {}", LocalDateTime.now(), requester.getUsername());
 
-            resp.setStatus(403); // Forbidden
+            resp.setStatus(403);
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not permitted to communicate with this endpoint.")));
             return;
         }
 
-
         try {
             logger.info("Iterating through list of reimbursements by id at {}", LocalDateTime.now());
 
-
-            if (reimb_idToSearchFor != null) {
-
-                ReimbursementsResponse foundRequest = reimbService.getReimbByReimb_id(reimb_idToSearchFor);
-                resp.getWriter().write(jsonMapper.writeValueAsString(foundRequest));
-                //! resp.getWriter().write("\nGet reimburse request by id");
-            }
-            if (status_idToSearchFor != null) {
-
-                ReimbursementsResponse foundStatus_id = (ReimbursementsResponse) reimbService.getReimbByStatus_id(status_idToSearchFor);
-                resp.getWriter().write(jsonMapper.writeValueAsString(foundStatus_id));
-                //! resp.getWriter().write("\nGet reimburse by status");
-            }
-            if (type_idToSearchFor != null) {
-                logger.info("Iterating through list of reimbursements by type at {}", LocalDateTime.now());
-
-                ReimbursementsResponse foundType_id = (ReimbursementsResponse) reimbService.getReimbByType_id(type_idToSearchFor);
-                resp.getWriter().write(jsonMapper.writeValueAsString(foundType_id));
-                //! resp.getWriter().write("\nGet reimburse by type");
-
+            if (idToSearchFor == null) {
+                List<ReimbursementsResponse> allReimbs = reimbService.getAllReimb();
+                resp.getWriter().write(jsonMapper.writeValueAsString(allReimbs));
+            } else {
+                ReimbursementsResponse foundReimb = reimbService.getReimbById(idToSearchFor);
+                resp.getWriter().write(jsonMapper.writeValueAsString(foundReimb));
             }
         } catch (InvalidRequestException | JsonMappingException e) {
 
-            resp.setStatus(400);
+            resp.setStatus(400); // BAD REQUEST;
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(400, e.getMessage())));
             logger.warn("Unable to locate reimbursement at {}, error message: {}", LocalDateTime.now(), e.getMessage());
 
         } catch (ResourceNotFoundException e) {
 
-            resp.setStatus(404);
+            resp.setStatus(404); // NOT FOUND; the sought resource could not be located
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(404, e.getMessage())));
             logger.warn("Unable to locate reimbursement at {}, error message: {}", LocalDateTime.now(), e.getMessage());
 
         } catch (DataSourceException e) {
 
-            resp.setStatus(500);
+            resp.setStatus(500); // INTERNAL SERVER ERROR; general error indicating a problem with the server
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(500, e.getMessage())));
             logger.warn("Unable to locate reimbursement at {}, error message: {}", LocalDateTime.now(), e.getMessage());
 
         }
-
-
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-
         resp.setContentType("application/json");
-
         HttpSession reimbSession = req.getSession(false);
 
-        if (reimbSession == null) {
+        if(reimbSession == null) {
             logger.warn("User who is not logged in, attempted to access information at {}", LocalDateTime.now());
 
             resp.setStatus(401);
@@ -127,10 +104,9 @@ public class ReimbServlet extends HttpServlet {
             return;
         }
 
+        UserResponse requester = (UserResponse) reimbSession.getAttribute("authUser");
 
-        UserResponse requester = (UserResponse) reimbSession.getAttribute("loggedInUser");
-
-        if (!requester.getRole().equals("JONIN(EMPLOYEES)")) {
+        if (!requester.getRole().equals("employee")) {
             logger.warn("Requester with invalid permissions attempted to register at {}", LocalDateTime.now());
 
             resp.setStatus(403);
@@ -141,12 +117,10 @@ public class ReimbServlet extends HttpServlet {
         logger.info("Attempting to register a new reimbursement at {}", LocalDateTime.now());
 
         try {
-
             NewReimbursementRequest requestBody = jsonMapper.readValue(req.getInputStream(), NewReimbursementRequest.class);
-            requestBody.setAuthor_id(requester.getUserId());
-            ResourceCreationResponse responseBody = reimbService.create(requestBody);
+            requestBody.setAuthor_Id(requester.getUserId());
+            ResourceCreationResponse responseBody = reimbService.create();
             resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));
-
             logger.info("New reimbursement successfully persisted at {}", LocalDateTime.now());
 
         } catch (InvalidRequestException | JsonMappingException e) {
@@ -170,69 +144,65 @@ public class ReimbServlet extends HttpServlet {
         }
     }
 
-
-
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 
         resp.setContentType("application/json");
         logger.info("Attempting to alter a reimbursement at {}", LocalDateTime.now());
 
         HttpSession reimbSession = req.getSession(false);
 
-        if (reimbSession == null) {
+        if(reimbSession == null) {
             logger.warn("User who is not logged in, attempted to access information at {}", LocalDateTime.now());
 
             resp.setStatus(401);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(401, "Requester not authenticated with server, log in")));
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(401, "Requestor not authenticated with server, log in")));
             return;
-
-
         }
-        UserResponse requester = (UserResponse) reimbSession.getAttribute("loggedInUser");
 
+        UserResponse requester = (UserResponse) reimbSession.getAttribute("authUser");
 
-
-        if ((!requester.getRole().equals("ADVISORS(FINANCE MANAGERS)"))) {
+        if (!(requester.getRole().equals("employee"))) {
             logger.warn("Requester with invalid permissions attempted to update reimbursements at {}", LocalDateTime.now());
 
-            resp.setStatus(403); // Forbidden
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not permitted to communicate with this endpoint.")));
+            resp.setStatus(403);
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not allowed to communicate with this endpoint.")));
             return;
         }
-
 
         try {
 
             UpdateReimbursementRequest requestPayload = jsonMapper.readValue(req.getInputStream(), UpdateReimbursementRequest.class);
 
+            if (requestPayload.getAuthor_id().equals(requester.getUserId())) {
+                reimbService.updateReimbursements(requestPayload);
+                logger.info("Reimbursement successfully updated at {}", LocalDateTime.now());
+                resp.setStatus(204);
 
-            reimbService.updateReimb(requestPayload);
-            logger.info("Reimbursement successfully updated at {}", LocalDateTime.now());
-            resp.setStatus(204);
+            } else {
+
+                logger.warn("Requester with invalid permissions attempted to update reimbursements at {}", LocalDateTime.now());
+
+                resp.setStatus(403);
+                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not allowed to communicate with this endpoint.")));
+                return;
+            }
 
         } catch (InvalidRequestException | JsonMappingException e) {
-
-            resp.setStatus(400);
+            resp.setStatus(400);// * bad request
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(400, e.getMessage())));
             logger.warn("Unable to persist updated reimbursement status at {}, error message: {}", LocalDateTime.now(), e.getMessage());
-
         } catch (AuthenticationException e) {
-
-            resp.setStatus(409);
+            resp.setStatus(409); // * conflict; indicate that provided resource could not be saved
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(409, e.getMessage())));
             logger.warn("Unable to persist updated reimbursement status at {}, error message: {}", LocalDateTime.now(), e.getMessage());
 
         } catch (DataSourceException e) {
-
-            resp.setStatus(500);
+            resp.setStatus(500); // * internal error
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(500, e.getMessage())));
             logger.warn("Unable to persist updated reimbursement status at {}, error message: {}", LocalDateTime.now(), e.getMessage());
 
         }
-
-
-
     }
+
 }

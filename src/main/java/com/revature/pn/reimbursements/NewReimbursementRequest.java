@@ -10,9 +10,14 @@ public class NewReimbursementRequest implements Request<Reimbursements> {
     private String submitted;
     private String description;
     private String author_id;
-
     private String status_id;
     private String type_id;
+    private Object resolver_id;
+
+    public String NewReimbursementRequest(NewReimbursementRequest newReimb1) {
+        String NewReimbursementRequest = "";
+        return NewReimbursementRequest;
+    }
 
 
     public String getReimb_id() {
@@ -101,6 +106,7 @@ public class NewReimbursementRequest implements Request<Reimbursements> {
         return null;
     }
 
-    public void setAuthor_id(Object userId) {
+
+    public void setAuthor_Id(String userId) {
     }
 }

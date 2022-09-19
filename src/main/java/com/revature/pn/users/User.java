@@ -14,9 +14,9 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private Role role;
+    private String role;
 
-    public User() {
+    public User(UserResponse userResponse, ObjectMapper jsonMapper) {
         super();
     }
 
@@ -27,10 +27,10 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.role = String.valueOf(role);
     }
 
-    public User(UserResponse userResponse, ObjectMapper jsonMapper) {
+    public User() {
 
     }
 
@@ -82,11 +82,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
@@ -95,7 +95,9 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(givenName, user.givenName) && Objects.equals(surname, user.surname) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(role, user.role);
+        return Objects.equals(id, user.id) && Objects.equals(givenName, user.givenName) && Objects.equals(surname, user.surname)
+                && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password)
+                && Objects.equals(role, user.role);
     }
 
     @Override
@@ -116,4 +118,18 @@ public class User {
                 '}';
     }
 
+
+    public String getUserId() {
+        return id;
+    }
+
+    public void setUserId(String user_id) {
+    }
+
+    public void setIsActive(String is_active) {
+    }
+
+    public boolean getIsActive() {
+        return true;
+    }
 }
