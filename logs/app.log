@@ -1,0 +1,44 @@
+2022-09-20 10:41:00 INFO  Starting pn application
+2022-09-20 10:41:01 INFO  pn web application successfully started
+2022-09-20 10:41:19 INFO  A POST request was received by /p1/auth at 2022-09-20T10:41:19.848916700
+2022-09-20 10:41:19 INFO  Successfully logged in at 2022-09-20T10:41:19.897915700 for user: TRAVISJ
+2022-09-20 10:41:19 INFO  Attempting to search by username and password at 2022-09-20T10:41:19.898916700
+2022-09-20 10:41:20 INFO  User found by username and password at 2022-09-20T10:41:20.607716700
+2022-09-20 10:41:20 INFO  Attempting to map the result set of user info at 2022-09-20T10:41:20.662347400
+2022-09-20 10:41:20 INFO  Establishing user session for user: TRAVISJ
+2022-09-20 10:41:20 INFO  Request successfully processed at 2022-09-20T10:41:20.678468600
+2022-09-20 10:41:57 INFO  Requester name and role
+2022-09-20 10:41:57 INFO  Iterating through list of users at 2022-09-20T10:41:57.803210900
+2022-09-20 10:41:57 INFO  Attempting to connect to the database at 2022-09-20T10:41:57.803210900
+2022-09-20 10:41:58 INFO  Attempting to map the result set of user info at 2022-09-20T10:41:58.326109800
+2022-09-20 10:41:58 INFO  Successful database connection at 2022-09-20T10:41:58.327113500
+2022-09-20 10:43:59 INFO  A POST request was received by /p1/auth at 2022-09-20T10:43:59.794816900
+2022-09-20 10:43:59 INFO  Successfully logged in at 2022-09-20T10:43:59.794816900 for user: JANETJ
+2022-09-20 10:43:59 INFO  Attempting to search by username and password at 2022-09-20T10:43:59.794816900
+2022-09-20 10:44:00 INFO  User found by username and password at 2022-09-20T10:44:00.311677
+2022-09-20 10:44:00 INFO  Attempting to map the result set of user info at 2022-09-20T10:44:00.353646600
+2022-09-20 10:44:00 INFO  Establishing user session for user: JANETJ
+2022-09-20 10:44:00 INFO  Request successfully processed at 2022-09-20T10:44:00.354647600
+2022-09-20 10:44:14 INFO  Iterating through list of reimbursements by id at 2022-09-20T10:44:14.985938200
+2022-09-20 10:44:14 INFO  Attempting to connect to the database at 2022-09-20T10:44:14.985938200
+2022-09-20 10:44:15 INFO  Attempting to map the result set of reimbursement info at 2022-09-20T10:44:15.352629900
+2022-09-20 10:44:15 INFO  Successful database connection at 2022-09-20T10:44:15.353633100
+2022-09-20 10:44:15 WARN  Unable to locate reimbursement at 2022-09-20T10:44:15.358637800, error message: No serializer found for class com.revature.pn.reimbursements.ReimbursementsResponse and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) (through reference chain: java.util.ArrayList[0])
+2022-09-20 11:25:31 INFO  Starting pn application
+2022-09-20 11:25:32 INFO  pn web application successfully started
+2022-09-20 11:25:43 INFO  A POST request was received by /p1/auth at 2022-09-20T11:25:43.416410300
+2022-09-20 11:25:43 INFO  Successfully logged in at 2022-09-20T11:25:43.466586200 for user: JANETJ
+2022-09-20 11:25:43 INFO  Attempting to search by username and password at 2022-09-20T11:25:43.466586200
+2022-09-20 11:25:44 INFO  User found by username and password at 2022-09-20T11:25:44.093250900
+2022-09-20 11:25:44 INFO  Attempting to map the result set of user info at 2022-09-20T11:25:44.147424900
+2022-09-20 11:25:44 INFO  Establishing user session for user: JANETJ
+2022-09-20 11:25:44 INFO  Request successfully processed at 2022-09-20T11:25:44.164209700
+2022-09-20 11:26:12 INFO  Iterating through list of reimbursements by id at 2022-09-20T11:26:12.297359100
+2022-09-20 11:26:12 INFO  Attempting to connect to the database at 2022-09-20T11:26:12.297359100
+2022-09-20 11:26:12 INFO  Attempting to map the result set of reimbursement info at 2022-09-20T11:26:12.654541700
+2022-09-20 11:26:12 INFO  Successful database connection at 2022-09-20T11:26:12.655572600
+2022-09-20 11:26:12 WARN  Unable to locate reimbursement at 2022-09-20T11:26:12.662576800, error message: No serializer found for class com.revature.pn.reimbursements.ReimbursementsResponse and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) (through reference chain: java.util.ArrayList[0])
+2022-09-20 12:19:12 INFO  Starting pn application
+2022-09-20 12:19:12 INFO  pn web application successfully started
+2022-09-20 13:00:31 INFO  Starting pn application
+2022-09-20 13:00:32 INFO  pn web application successfully started

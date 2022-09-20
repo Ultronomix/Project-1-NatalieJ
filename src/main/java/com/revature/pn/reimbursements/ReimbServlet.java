@@ -48,12 +48,12 @@ public class ReimbServlet extends HttpServlet {
             return;
         }
 
-        String idToSearchFor = req.getParameter("authorId");
+        String idToSearchFor = req.getParameter("author_Id");
 
         UserResponse requester = (UserResponse) reimbSession.getAttribute("authUser");
 
         if (!isFinanceManager(requester) && !requesterOwned(requester, idToSearchFor)) {
-            logger.warn("Requester with invalid permissions attempted to view information at {}, {}", LocalDateTime.now(), requester.getUsername());
+            logger.warn("Requester that does not have the Finance Manager permissions attempted to view information at {}, {}", LocalDateTime.now(), requester.getUsername());
 
             resp.setStatus(403);
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester not permitted to communicate with this endpoint.")));
@@ -100,7 +100,7 @@ public class ReimbServlet extends HttpServlet {
             logger.warn("User who is not logged in, attempted to access information at {}", LocalDateTime.now());
 
             resp.setStatus(401);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(401, "Requestor not authenticated with server, log in")));
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(401, "Requester not authenticated with server, log in")));
             return;
         }
 
